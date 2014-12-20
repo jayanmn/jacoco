@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class SystemPropertiesRuntime extends AbstractRuntime {
 	public int generateDataAccessor(final long classid, final String classname,
 			final int probecount, final MethodVisitor mv) {
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System",
-				"getProperties", "()Ljava/util/Properties;");
+				"getProperties", "()Ljava/util/Properties;", false);
 
 		// Stack[0]: Ljava/util/Properties;
 
@@ -51,7 +51,7 @@ public class SystemPropertiesRuntime extends AbstractRuntime {
 		// Stack[0]: Ljava/util/Properties;
 
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Properties",
-				"get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+				"get", "(Ljava/lang/Object;)Ljava/lang/Object;", false);
 
 		// Stack[0]: Ljava/lang/Object;
 

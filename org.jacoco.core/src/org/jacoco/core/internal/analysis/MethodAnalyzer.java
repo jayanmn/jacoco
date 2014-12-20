@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.List;
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.ISourceNode;
+import org.jacoco.core.internal.flow.IFrame;
 import org.jacoco.core.internal.flow.Instruction;
 import org.jacoco.core.internal.flow.LabelInfo;
 import org.jacoco.core.internal.flow.MethodProbesVisitor;
@@ -25,7 +26,7 @@ import org.objectweb.asm.Label;
 
 /**
  * A {@link MethodProbesVisitor} that analyzes which statements and branches of
- * a method has been executed based on given probe data.
+ * a method have been executed based on given probe data.
  */
 public class MethodAnalyzer extends MethodProbesVisitor {
 
@@ -60,7 +61,7 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 	 * @param name
 	 *            method name
 	 * @param desc
-	 *            description of the method
+	 *            method descriptor
 	 * @param signature
 	 *            optional parameterized signature
 	 * 
@@ -148,7 +149,7 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 
 	@Override
 	public void visitMethodInsn(final int opcode, final String owner,
-			final String name, final String desc) {
+			final String name, final String desc, final boolean itf) {
 		visitInsn();
 	}
 
@@ -212,7 +213,7 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 
 	@Override
 	public void visitJumpInsnWithProbe(final int opcode, final Label label,
-			final int probeId) {
+			final int probeId, final IFrame frame) {
 		visitInsn();
 		addProbe(probeId);
 	}
@@ -225,13 +226,13 @@ public class MethodAnalyzer extends MethodProbesVisitor {
 
 	@Override
 	public void visitTableSwitchInsnWithProbes(final int min, final int max,
-			final Label dflt, final Label[] labels) {
+			final Label dflt, final Label[] labels, final IFrame frame) {
 		visitSwitchInsnWithProbes(dflt, labels);
 	}
 
 	@Override
 	public void visitLookupSwitchInsnWithProbes(final Label dflt,
-			final int[] keys, final Label[] labels) {
+			final int[] keys, final Label[] labels, final IFrame frame) {
 		visitSwitchInsnWithProbes(dflt, labels);
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,10 +54,10 @@ public class CheckMojo extends AbstractJacocoMojo implements IViolationsOutput {
 	 * If a limit refers to a ratio the range is from 0.0 to 1.0 where the
 	 * number of decimal places will also determine the precision in error
 	 * messages.
-	 *
+	 * 
 	 * Note that you <b>must</b> use <tt>implementation</tt> hints for
-	 * <tt>rule</tt> and <tt>limit</tt> when using Maven 2, with Maven 3 you
-	 * do not need to specify the attributes.
+	 * <tt>rule</tt> and <tt>limit</tt> when using Maven 2, with Maven 3 you do
+	 * not need to specify the attributes.
 	 * </p>
 	 * 
 	 * <p>
@@ -118,7 +118,7 @@ public class CheckMojo extends AbstractJacocoMojo implements IViolationsOutput {
 	/**
 	 * Halt the build if any of the checks fail.
 	 * 
-	 * @parameter expression="${jacoco.haltOnFailure}" default-value="true"
+	 * @parameter property="jacoco.haltOnFailure" default-value="true"
 	 * @required
 	 */
 	private boolean haltOnFailure;
@@ -137,11 +137,12 @@ public class CheckMojo extends AbstractJacocoMojo implements IViolationsOutput {
 			getLog().info(MSG_SKIPPING + dataFile);
 			return false;
 		}
-		final File classesDirectory = new File(getProject().getBuild().getOutputDirectory());
+		final File classesDirectory = new File(getProject().getBuild()
+				.getOutputDirectory());
 		if (!classesDirectory.exists()) {
 			getLog().info(
-					"Skipping JaCoCo execution due to missing classes directory:" +
-					classesDirectory);
+					"Skipping JaCoCo execution due to missing classes directory:"
+							+ classesDirectory);
 			return false;
 		}
 		return true;
@@ -189,7 +190,7 @@ public class CheckMojo extends AbstractJacocoMojo implements IViolationsOutput {
 		final FileFilter fileFilter = new FileFilter(this.getIncludes(),
 				this.getExcludes());
 		final BundleCreator creator = new BundleCreator(getProject(),
-				fileFilter);
+				fileFilter, getLog());
 		try {
 			final ExecutionDataStore executionData = loadExecutionData();
 			return creator.createBundle(executionData);

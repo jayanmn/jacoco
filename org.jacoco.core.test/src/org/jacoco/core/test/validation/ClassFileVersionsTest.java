@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import static org.objectweb.asm.Opcodes.V1_4;
 import static org.objectweb.asm.Opcodes.V1_5;
 import static org.objectweb.asm.Opcodes.V1_6;
 import static org.objectweb.asm.Opcodes.V1_7;
+import static org.objectweb.asm.Opcodes.V1_8;
 
 import java.io.IOException;
 
@@ -77,6 +78,11 @@ public class ClassFileVersionsTest {
 		testVersion(V1_7, true);
 	}
 
+	@Test
+	public void test_1_8() throws IOException {
+		testVersion(V1_8, true);
+	}
+
 	private void testVersion(int version, boolean frames) throws IOException {
 		final byte[] original = createClass(version);
 
@@ -121,7 +127,8 @@ public class ClassFileVersionsTest {
 		mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V");
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V",
+				false);
 		mv.visitInsn(RETURN);
 		mv.visitMaxs(1, 1);
 		mv.visitEnd();

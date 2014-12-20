@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
 package org.jacoco.core.runtime;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -98,24 +97,6 @@ public abstract class RuntimeTestBase {
 		assertTrue(data[1]);
 	}
 
-	@Test
-	public void testDisconnect() throws Exception {
-		final ITarget target = generateAndInstantiateClass(1001);
-		target.a();
-		runtime.disconnect(target.getClass());
-		assertNull(target.get());
-		data.collect(storage, storage, false);
-		storage.assertSize(1);
-		final boolean[] data = storage.getData(1001).getProbes();
-		assertTrue(data[0]);
-	}
-
-	@Test
-	public void testDisconnectInterface() throws Exception {
-		// No effect:
-		runtime.disconnect(ITarget.class);
-	}
-
 	/**
 	 * Creates a new class with the given id, loads this class and instantiates
 	 * it. The constructor of the generated class will request the probe array
@@ -193,9 +174,9 @@ public abstract class RuntimeTestBase {
 
 		writer.visitEnd();
 
-		final TargetLoader loader = new TargetLoader(
-				className.replace('/', '.'), writer.toByteArray());
-		return (ITarget) loader.newTargetInstance();
+		final TargetLoader loader = new TargetLoader();
+		return (ITarget) loader.add(className.replace('/', '.'),
+				writer.toByteArray()).newInstance();
 	}
 
 	/**

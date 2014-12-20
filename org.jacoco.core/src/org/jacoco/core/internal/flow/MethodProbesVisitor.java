@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,9 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 * @param probeId
 	 *            id of the probe to insert
 	 */
-	public abstract void visitProbe(int probeId);
+	@SuppressWarnings("unused")
+	public void visitProbe(final int probeId) {
+	}
 
 	/**
 	 * Visits a jump instruction. A probe with the given id should be inserted
@@ -63,10 +65,16 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            instruction may jump.
 	 * @param probeId
 	 *            id of the probe
+	 * @param frame
+	 *            stackmap frame status after the execution of the jump
+	 *            instruction. The instance is only valid with the call of this
+	 *            method.
 	 * @see MethodVisitor#visitJumpInsn(int, Label)
 	 */
-	public abstract void visitJumpInsnWithProbe(int opcode, Label label,
-			int probeId);
+	@SuppressWarnings("unused")
+	public void visitJumpInsnWithProbe(final int opcode, final Label label,
+			final int probeId, final IFrame frame) {
+	}
 
 	/**
 	 * Visits a zero operand instruction with a probe. This event is used only
@@ -81,7 +89,9 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            id of the probe
 	 * @see MethodVisitor#visitInsn(int)
 	 */
-	public abstract void visitInsnWithProbe(int opcode, int probeId);
+	@SuppressWarnings("unused")
+	public void visitInsnWithProbe(final int opcode, final int probeId) {
+	}
 
 	/**
 	 * Visits a TABLESWITCH instruction with optional probes for each target
@@ -100,10 +110,16 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            beginnings of the handler blocks. <code>labels[i]</code> is
 	 *            the beginning of the handler block for the
 	 *            <code>min + i</code> key.
+	 * @param frame
+	 *            stackmap frame status after the execution of the switch
+	 *            instruction. The instance is only valid with the call of this
+	 *            method.
 	 * @see MethodVisitor#visitTableSwitchInsn(int, int, Label, Label[])
 	 */
-	public abstract void visitTableSwitchInsnWithProbes(int min, int max,
-			Label dflt, Label[] labels);
+	@SuppressWarnings("unused")
+	public void visitTableSwitchInsnWithProbes(final int min, final int max,
+			final Label dflt, final Label[] labels, final IFrame frame) {
+	}
 
 	/**
 	 * Visits a LOOKUPSWITCH instruction with optional probes for each target
@@ -120,9 +136,15 @@ public abstract class MethodProbesVisitor extends MethodVisitor {
 	 *            beginnings of the handler blocks. <code>labels[i]</code> is
 	 *            the beginning of the handler block for the
 	 *            <code>keys[i]</code> key.
+	 * @param frame
+	 *            stackmap frame status after the execution of the switch
+	 *            instruction. The instance is only valid with the call of this
+	 *            method.
 	 * @see MethodVisitor#visitLookupSwitchInsn(Label, int[], Label[])
 	 */
-	public abstract void visitLookupSwitchInsnWithProbes(Label dflt,
-			int[] keys, Label[] labels);
+	@SuppressWarnings("unused")
+	public void visitLookupSwitchInsnWithProbes(final Label dflt,
+			final int[] keys, final Label[] labels, final IFrame frame) {
+	}
 
 }

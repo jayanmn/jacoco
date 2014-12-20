@@ -205,6 +205,14 @@
       <td><code>sun.reflect.DelegatingClassLoader</code></td>
     </tr>
     <tr>
+      <td><code>inclbootstrapclasses</code></td>
+      <td>Specifies whether also classes from the bootstrap classloader should
+          be instrumented. Use this feature with caution, it needs heavy
+          includes/excludes tuning. 
+      </td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
       <td><code>sessionid</code></td>
       <td>A session identifier that is written with the execution data. Without
           this parameter a random identifier is created by the agent.
@@ -891,6 +899,13 @@
       <td><code>destdir</code></td>
       <td>Directory location to write the instrumented files to.</td>
       <td><i>none (required)</i></td>
+    </tr>
+    <tr>
+      <td><code>removesignatures</code></td>
+      <td>If set to <code>true</code> all signature related information is 
+          stripped from JARs. This is typically necessary as instrumentation
+          breaks the signatures of the original class files.</td>
+      <td><code>true</code></td>
     </tr>
   </tbody>
 </table>

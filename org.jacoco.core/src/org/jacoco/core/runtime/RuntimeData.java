@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,7 +188,7 @@ public class RuntimeData {
 		mv.visitInsn(Opcodes.ICONST_0);
 		mv.visitLdcInsn(Long.valueOf(classid));
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Long", "valueOf",
-				"(J)Ljava/lang/Long;");
+				"(J)Ljava/lang/Long;", false);
 		mv.visitInsn(Opcodes.AASTORE);
 
 		// Class Name:
@@ -202,7 +202,7 @@ public class RuntimeData {
 		mv.visitInsn(Opcodes.ICONST_2);
 		InstrSupport.push(mv, probecount);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer",
-				"valueOf", "(I)Ljava/lang/Integer;");
+				"valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitInsn(Opcodes.AASTORE);
 	}
 
@@ -238,7 +238,7 @@ public class RuntimeData {
 		// stack[0]: [Ljava/lang/Object;
 
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Object", "equals",
-				"(Ljava/lang/Object;)Z");
+				"(Ljava/lang/Object;)Z", false);
 		mv.visitInsn(Opcodes.POP);
 
 		// stack[0]: [Ljava/lang/Object;

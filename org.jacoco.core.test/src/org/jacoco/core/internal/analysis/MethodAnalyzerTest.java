@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -257,7 +257,8 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 		method.visitLabel(l1);
 		method.visitLineNumber(1001, l1);
 		method.visitVarInsn(Opcodes.ALOAD, 0);
-		method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Foo", "test", "()Z");
+		method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "Foo", "test", "()Z",
+				false);
 		method.visitJumpInsn(Opcodes.IFEQ, l1);
 		final Label l2 = new Label();
 		method.visitLabel(l2);
@@ -512,7 +513,7 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 		method.visitLineNumber(1001, l1);
 		method.visitVarInsn(Opcodes.ALOAD, 0);
 		method.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Throwable",
-				"printStackTrace", "()V");
+				"printStackTrace", "()V", false);
 		method.visitLabel(l2);
 		method.visitJumpInsn(Opcodes.GOTO, l4);
 		method.visitLabel(l3);
@@ -556,7 +557,9 @@ public class MethodAnalyzerTest implements IProbeIdGenerator {
 		LabelFlowAnalyzer.markLabels(method);
 		final MethodAnalyzer analyzer = new MethodAnalyzer("doit", "()V", null,
 				probes);
-		method.accept(new MethodProbesAdapter(analyzer, this));
+		final MethodProbesAdapter probesAdapter = new MethodProbesAdapter(
+				analyzer, this);
+		method.accept(probesAdapter);
 		result = analyzer.getCoverage();
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,10 @@ public class TestTarget {
 	}
 
 	public static void main(String[] args) throws Exception {
+
+		// Load some class from the bootstrap classloader:
+		new java.sql.Timestamp(0);
+
 		System.out.println("Target executed");
 
 		// Wait for termination file to turn up

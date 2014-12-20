@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,8 +86,8 @@ public class InstrumenterTest {
 		byte[] bytes = instrumenter.instrument(
 				TargetLoader.getClassDataAsBytes(InstrumenterTest.class),
 				"Test");
-		TargetLoader loader = new TargetLoader(InstrumenterTest.class, bytes);
-		Class<?> clazz = loader.getTargetClass();
+		TargetLoader loader = new TargetLoader();
+		Class<?> clazz = loader.add(InstrumenterTest.class, bytes);
 		assertEquals("org.jacoco.core.instr.InstrumenterTest", clazz.getName());
 	}
 
@@ -125,8 +125,8 @@ public class InstrumenterTest {
 		// Create instrumented instance:
 		byte[] bytes = instrumenter.instrument(
 				TargetLoader.getClassData(SerializationTarget.class), "Test");
-		TargetLoader loader = new TargetLoader(SerializationTarget.class, bytes);
-		Object obj1 = loader.getTargetClass()
+		TargetLoader loader = new TargetLoader();
+		Object obj1 = loader.add(SerializationTarget.class, bytes)
 				.getConstructor(String.class, Integer.TYPE)
 				.newInstance("Hello", Integer.valueOf(42));
 
@@ -232,6 +232,44 @@ public class InstrumenterTest {
 
 		assertEquals(0, count);
 		assertEquals("text", new String(out.toByteArray()));
+	}
+
+	@Test
+	public void testInstrumentAll_RemoveSignatures() throws IOException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		ZipOutputStream zipout = new ZipOutputStream(buffer);
+		zipout.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+		zipout.putNextEntry(new ZipEntry("META-INF/ALIAS.SF"));
+		zipout.finish();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		int count = instrumenter.instrumentAll(
+				new ByteArrayInputStream(buffer.toByteArray()), out, "Test");
+
+		assertEquals(0, count);
+		ZipInputStream zipin = new ZipInputStream(new ByteArrayInputStream(
+				out.toByteArray()));
+		assertEquals("META-INF/MANIFEST.MF", zipin.getNextEntry().getName());
+		assertNull(zipin.getNextEntry());
+	}
+
+	@Test
+	public void testInstrumentAll_KeepSignatures() throws IOException {
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		ZipOutputStream zipout = new ZipOutputStream(buffer);
+		zipout.putNextEntry(new ZipEntry("META-INF/ALIAS.SF"));
+		zipout.finish();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		instrumenter.setRemoveSignatures(false);
+		int count = instrumenter.instrumentAll(
+				new ByteArrayInputStream(buffer.toByteArray()), out, "Test");
+
+		assertEquals(0, count);
+		ZipInputStream zipin = new ZipInputStream(new ByteArrayInputStream(
+				out.toByteArray()));
+		assertEquals("META-INF/ALIAS.SF", zipin.getNextEntry().getName());
+		assertNull(zipin.getNextEntry());
 	}
 
 }

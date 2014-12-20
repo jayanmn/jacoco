@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ public class ExceptionsTest extends ValidationTestBase {
 		assertLine("noExceptionTryCatch.tryBlock", ICounter.FULLY_COVERED);
 		assertLine("noExceptionTryCatch.catchBlock", ICounter.NOT_COVERED);
 
-		// 4. Try/Catch Block Without a Implicit Exception Thrown
+		// 4. Try/Catch Block With Exception Thrown Implicitly
 		// As always with implicit exceptions we don't see when a block aborts
 		// somewhere in the middle.
 		assertLine("implicitExceptionTryCatch.beforeBlock",

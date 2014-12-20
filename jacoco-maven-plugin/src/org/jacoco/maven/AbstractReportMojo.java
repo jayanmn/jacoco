@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,14 +49,14 @@ public abstract class AbstractReportMojo extends AbstractMavenReport {
 	/**
 	 * Encoding of the generated reports.
 	 * 
-	 * @parameter expression="${project.reporting.outputEncoding}"
+	 * @parameter property="project.reporting.outputEncoding"
 	 *            default-value="UTF-8"
 	 */
 	String outputEncoding;
 	/**
 	 * Encoding of the source files.
 	 * 
-	 * @parameter expression="${project.build.sourceEncoding}"
+	 * @parameter property="project.build.sourceEncoding"
 	 *            default-value="UTF-8"
 	 */
 	String sourceEncoding;
@@ -77,13 +77,13 @@ public abstract class AbstractReportMojo extends AbstractMavenReport {
 	/**
 	 * Flag used to suppress execution.
 	 * 
-	 * @parameter expression="${jacoco.skip}" default-value="false"
+	 * @parameter property="jacoco.skip" default-value="false"
 	 */
 	boolean skip;
 	/**
 	 * Maven project.
 	 * 
-	 * @parameter expression="${project}"
+	 * @parameter property="project"
 	 * @readonly
 	 */
 	MavenProject project;
@@ -215,7 +215,7 @@ public abstract class AbstractReportMojo extends AbstractMavenReport {
 		final FileFilter fileFilter = new FileFilter(this.getIncludes(),
 				this.getExcludes());
 		final BundleCreator creator = new BundleCreator(this.getProject(),
-				fileFilter);
+				fileFilter, getLog());
 		final IBundleCoverage bundle = creator.createBundle(executionDataStore);
 		final SourceFileCollection locator = new SourceFileCollection(
 				getCompileSourceRoots(), sourceEncoding);

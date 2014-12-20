@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,7 +89,8 @@ public class LoggerRuntime extends AbstractRuntime {
 
 		mv.visitLdcInsn(CHANNEL);
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/util/logging/Logger",
-				"getLogger", "(Ljava/lang/String;)Ljava/util/logging/Logger;");
+				"getLogger", "(Ljava/lang/String;)Ljava/util/logging/Logger;",
+				false);
 
 		// Stack[2]: Ljava/util/logging/Logger;
 		// Stack[1]: [Ljava/lang/Object;
@@ -132,9 +133,12 @@ public class LoggerRuntime extends AbstractRuntime {
 		// Stack[1]: Ljava/util/logging/Logger;
 		// Stack[0]: [Ljava/lang/Object;
 
-		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/logging/Logger",
+		mv.visitMethodInsn(
+				Opcodes.INVOKEVIRTUAL,
+				"java/util/logging/Logger",
 				"log",
-				"(Ljava/util/logging/Level;Ljava/lang/String;[Ljava/lang/Object;)V");
+				"(Ljava/util/logging/Level;Ljava/lang/String;[Ljava/lang/Object;)V",
+				false);
 
 		// Stack[0]: [Ljava/lang/Object;
 

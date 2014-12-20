@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,7 +122,7 @@ public class RuntimeDataTest {
 		mv.visitCode();
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>",
-				"()V");
+				"()V", false);
 		mv.visitInsn(Opcodes.RETURN);
 		mv.visitMaxs(1, 1);
 		mv.visitEnd();
@@ -137,9 +137,9 @@ public class RuntimeDataTest {
 		mv.visitEnd();
 
 		writer.visitEnd();
-		final TargetLoader loader = new TargetLoader("Sample",
-				writer.toByteArray());
-		Callable<?> callable = (Callable<?>) loader.newTargetInstance();
+		final TargetLoader loader = new TargetLoader();
+		Callable<?> callable = (Callable<?>) loader.add("Sample",
+				writer.toByteArray()).newInstance();
 		final Object[] args = (Object[]) callable.call();
 		assertEquals(3, args.length, 0.0);
 		assertEquals(Long.valueOf(1000), args[0]);
@@ -163,7 +163,7 @@ public class RuntimeDataTest {
 		mv.visitCode();
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>",
-				"()V");
+				"()V", false);
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitVarInsn(Opcodes.ALOAD, 1);
 		mv.visitFieldInsn(Opcodes.PUTFIELD, "Sample", "access",
@@ -188,9 +188,9 @@ public class RuntimeDataTest {
 				null, null);
 
 		writer.visitEnd();
-		final TargetLoader loader = new TargetLoader("Sample",
-				writer.toByteArray());
-		Callable<?> callable = (Callable<?>) loader.getTargetClass()
+		final TargetLoader loader = new TargetLoader();
+		Callable<?> callable = (Callable<?>) loader
+				.add("Sample", writer.toByteArray())
 				.getConstructor(Object.class).newInstance(data);
 		assertSame(probes, callable.call());
 	}

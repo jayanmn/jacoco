@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.TryCatchBlockNode;
 
 /**
  * Method visitor to collect flow related information about the {@link Label}s
@@ -36,10 +35,8 @@ public final class LabelFlowAnalyzer extends MethodVisitor {
 		// We do not use the accept() method as ASM resets labels after every
 		// call to accept()
 		final MethodVisitor lfa = new LabelFlowAnalyzer();
-		if (method.tryCatchBlocks != null) {
-			for (int i = method.tryCatchBlocks.size(); --i >= 0;) {
-				((TryCatchBlockNode) method.tryCatchBlocks.get(i)).accept(lfa);
-			}
+		for (int i = method.tryCatchBlocks.size(); --i >= 0;) {
+			method.tryCatchBlocks.get(i).accept(lfa);
 		}
 		method.instructions.accept(lfa);
 	}
@@ -66,8 +63,13 @@ public final class LabelFlowAnalyzer extends MethodVisitor {
 	@Override
 	public void visitTryCatchBlock(final Label start, final Label end,
 			final Label handler, final String type) {
-		// Enforce probes at the beginning and end of the block:
+		// Enforce probe at the beginning of the block. Assuming the start of
+		// the block already is successor of some other code, adding a target
+		// makes the start a multitarget. However, if the start of the block
+		// also is the start of the method, no probe will be added.
 		LabelInfo.setTarget(start);
+
+		// Mark exception handler as possible target of the block
 		LabelInfo.setTarget(handler);
 	}
 
@@ -169,7 +171,7 @@ public final class LabelFlowAnalyzer extends MethodVisitor {
 
 	@Override
 	public void visitMethodInsn(final int opcode, final String owner,
-			final String name, final String desc) {
+			final String name, final String desc, final boolean itf) {
 		successor = true;
 		first = false;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -157,8 +157,7 @@ public class ModifiedSystemClassRuntimeTest extends RuntimeTestBase {
 	private static void verifyInstrumentedClass(String name, byte[] source)
 			throws Exception {
 		name = name.replace('/', '.');
-		final Class<?> targetClass = new TargetLoader(name, source)
-				.getTargetClass();
+		final Class<?> targetClass = new TargetLoader().add(name, source);
 
 		// Check added field:
 		final Field f = targetClass.getField("$jacocoAccess");

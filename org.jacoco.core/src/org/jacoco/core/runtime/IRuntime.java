@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,19 +33,5 @@ public interface IRuntime extends IExecutionDataAccessorGenerator {
 	 * called when classes instrumented for this runtime are not used any more.
 	 */
 	public void shutdown();
-
-	/**
-	 * Clears the execution data buffered in the given instrumented type. It
-	 * forces the class to re-connect to the runtime the next time it is
-	 * executed. This method is used by the agent and is required when a class
-	 * has been redefined. Note that a call to this method does not actually
-	 * reset the data that is already stored in the runtime.
-	 * 
-	 * @param type
-	 *            class to clear
-	 * @throws Exception
-	 *             if clearing the data is not possible
-	 */
-	public void disconnect(final Class<?> type) throws Exception;
 
 }

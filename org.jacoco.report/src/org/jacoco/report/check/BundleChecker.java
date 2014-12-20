@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ class BundleChecker {
 	private final Collection<Rule> bundleRules;
 	private final Collection<Rule> packageRules;
 	private final Collection<Rule> classRules;
-	private final ArrayList<Rule> sourceFileRules;
+	private final Collection<Rule> sourceFileRules;
 	private final Collection<Rule> methodRules;
 
 	private final boolean traversePackages;

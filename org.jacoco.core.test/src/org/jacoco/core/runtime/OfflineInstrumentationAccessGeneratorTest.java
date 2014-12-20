@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class OfflineInstrumentationAccessGeneratorTest {
 		expected.getVisitor().visitIntInsn(Opcodes.BIPUSH, 17);
 		String rtname = JaCoCo.RUNTIMEPACKAGE.replace('.', '/') + "/Offline";
 		expected.getVisitor().visitMethodInsn(Opcodes.INVOKESTATIC, rtname,
-				"getProbes", "(JLjava/lang/String;I)[Z");
+				"getProbes", "(JLjava/lang/String;I)[Z", false);
 
 		assertEquals(expected, actual);
 	}
@@ -128,9 +128,9 @@ public class OfflineInstrumentationAccessGeneratorTest {
 
 		writer.visitEnd();
 
-		final TargetLoader loader = new TargetLoader(
-				className.replace('/', '.'), writer.toByteArray());
-		return (ITarget) loader.newTargetInstance();
+		final TargetLoader loader = new TargetLoader();
+		return (ITarget) loader.add(className.replace('/', '.'),
+				writer.toByteArray()).newInstance();
 	}
 
 	/**

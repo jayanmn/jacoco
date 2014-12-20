@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ package org.jacoco.maven;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -37,17 +37,17 @@ public class MergeMojo extends AbstractJacocoMojo {
 	/**
 	 * Path to the output file for execution data.
 	 * 
-	 * @parameter expression="${jacoco.destFile}"
+	 * @parameter property="jacoco.destFile"
 	 *            default-value="${project.build.directory}/jacoco.exec"
 	 */
 	private File destFile;
 
 	/**
 	 * This mojo accepts any number of execution data file sets.
-	 *
-	 * Note that you need an <tt>implementation</tt> hint on
-	 * <tt>fileset</tt> with Maven 2 (not needed with Maven 3):
-	 *
+	 * 
+	 * Note that you need an <tt>implementation</tt> hint on <tt>fileset</tt>
+	 * with Maven 2 (not needed with Maven 3):
+	 * 
 	 * <pre>
 	 * <code>
 	 * &lt;fileSets&gt;
@@ -60,11 +60,11 @@ public class MergeMojo extends AbstractJacocoMojo {
 	 * &lt;/fileSets&gt;
 	 * </code>
 	 * </pre>
-	 *
-	 * @parameter expression="${jacoco.fileSets}"
+	 * 
+	 * @parameter property="jacoco.fileSets"
 	 * @required
 	 */
-	private ArrayList<FileSet> fileSets;
+	private List<FileSet> fileSets;
 
 	@Override
 	protected void executeMojo() throws MojoExecutionException,

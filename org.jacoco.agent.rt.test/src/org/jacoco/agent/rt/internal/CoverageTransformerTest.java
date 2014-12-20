@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,9 +64,17 @@ public class CoverageTransformerTest {
 	}
 
 	@Test
-	public void testFilterSystemClass() {
+	public void testFilterIncludesBootstrapClassesPositive() {
+		options.setInclBootstrapClasses(true);
 		CoverageTransformer t = createTransformer();
-		assertFalse(t.filter(null, "org/example/Foo"));
+		assertTrue(t.filter(null, "java/util/TreeSet"));
+	}
+
+	@Test
+	public void testFilterIncludesBootstrapClassesNegative() {
+		options.setInclBootstrapClasses(false);
+		CoverageTransformer t = createTransformer();
+		assertFalse(t.filter(null, "java/util/TreeSet"));
 	}
 
 	@Test
@@ -148,9 +156,8 @@ public class CoverageTransformerTest {
 		CoverageTransformer t = createTransformer();
 		// Just pick any non-system class outside our namespace
 		final Class<?> target = JaCoCo.class;
-		t.transform(classLoader, target.getName(), target, null,
-				getClassData(target));
-		runtime.assertDisconnected(target);
+		assertNull(t.transform(classLoader, target.getName(), target, null,
+				getClassData(target)));
 	}
 
 	private CoverageTransformer createTransformer() {
@@ -173,8 +180,6 @@ public class CoverageTransformerTest {
 
 	private static class StubRuntime extends AbstractRuntime {
 
-		private Class<?> disconnected;
-
 		public StubRuntime() {
 		}
 
@@ -184,15 +189,6 @@ public class CoverageTransformerTest {
 		}
 
 		public void shutdown() {
-		}
-
-		@Override
-		public void disconnect(Class<?> type) throws Exception {
-			this.disconnected = type;
-		}
-
-		public void assertDisconnected(Class<?> expected) {
-			assertEquals(expected, disconnected);
 		}
 
 	}

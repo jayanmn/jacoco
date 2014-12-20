@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,7 @@ public final class LabelInfo {
 	/**
 	 * Checks whether multiple control paths lead to a label. Control flow path
 	 * to a certain label are: jump targets, exception handlers and normal
-	 * control flow from its predecessor instruction (unless this a
+	 * control flow from its predecessor instruction (unless this is an
 	 * unconditional jump or method exit).
 	 * 
 	 * @param label

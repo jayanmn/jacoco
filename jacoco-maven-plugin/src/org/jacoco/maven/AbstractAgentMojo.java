@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	/**
 	 * Map of plugin artifacts.
 	 * 
-	 * @parameter expression="${plugin.artifactMap}"
+	 * @parameter property="plugin.artifactMap"
 	 * @required
 	 * @readonly
 	 */
@@ -50,7 +50,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * If not specified, then "argLine" would be used for "jar" packaging and
 	 * "tycho.testArgLine" for "eclipse-test-plugin".
 	 * 
-	 * @parameter expression="${jacoco.propertyName}"
+	 * @parameter property="jacoco.propertyName"
 	 */
 	String propertyName;
 	/**
@@ -58,7 +58,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * is appended to the existing file. If set to false, an existing execution
 	 * data file will be replaced.
 	 * 
-	 * @parameter expression="${jacoco.append}"
+	 * @parameter property="jacoco.append"
 	 */
 	Boolean append;
 	/**
@@ -69,20 +69,28 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * particular class loaders that do not have access to the Java runtime
 	 * classes.
 	 * 
-	 * @parameter expression="${jacoco.exclClassLoaders}"
+	 * @parameter property="jacoco.exclClassLoaders"
 	 */
 	String exclClassLoaders;
+	/**
+	 * Specifies whether also classes from the bootstrap classloader should be
+	 * instrumented. Use this feature with caution, it needs heavy
+	 * includes/excludes tuning.
+	 * 
+	 * @parameter property="jacoco.inclBootstrapClasses"
+	 */
+	Boolean inclBootstrapClasses;
 	/**
 	 * A session identifier that is written with the execution data. Without
 	 * this parameter a random identifier is created by the agent.
 	 * 
-	 * @parameter expression="${jacoco.sessionId}"
+	 * @parameter property="jacoco.sessionId"
 	 */
 	String sessionId;
 	/**
 	 * If set to true coverage data will be written on VM shutdown.
 	 * 
-	 * @parameter expression="${jacoco.dumpOnExit}"
+	 * @parameter property="jacoco.dumpOnExit"
 	 */
 	Boolean dumpOnExit;
 	/**
@@ -98,7 +106,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * <li>none: Do not produce any output.</li>
 	 * </ul>
 	 * 
-	 * @parameter expression="${jacoco.output}"
+	 * @parameter property="jacoco.output"
 	 */
 	String output;
 	/**
@@ -106,7 +114,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * connect to when the output method is tcpclient. In tcpserver mode the
 	 * value "*" causes the agent to accept connections on any local address.
 	 * 
-	 * @parameter expression="${jacoco.address}"
+	 * @parameter property="jacoco.address"
 	 */
 	String address;
 	/**
@@ -115,7 +123,7 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * available, which means that if multiple JaCoCo agents should run on the
 	 * same machine, different ports have to be specified.
 	 * 
-	 * @parameter expression="${jacoco.port}"
+	 * @parameter property="jacoco.port"
 	 */
 	Integer port;
 	/**
@@ -124,13 +132,13 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 	 * debugging purposes or in case of dynamically created classes for example
 	 * when scripting engines are used.
 	 * 
-	 * @parameter expression="${jacoco.classDumpDir}"
+	 * @parameter property="jacoco.classDumpDir"
 	 */
 	File classDumpDir;
 	/**
 	 * If set to true the agent exposes functionality via JMX.
 	 * 
-	 * @parameter expression="${jacoco.jmx}"
+	 * @parameter property="jacoco.jmx"
 	 */
 	Boolean jmx;
 
@@ -143,6 +151,14 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 				oldValue, getAgentJarFile());
 		getLog().info(name + " set to " + newValue);
 		projectProperties.setProperty(name, newValue);
+	}
+
+	@Override
+	protected void skipMojo() {
+		final String name = getEffectivePropertyName();
+		final Properties projectProperties = getProject().getProperties();
+		getLog().info(name + " set to empty");
+		projectProperties.setProperty(name, "");
 	}
 
 	File getAgentJarFile() {
@@ -169,6 +185,10 @@ public abstract class AbstractAgentMojo extends AbstractJacocoMojo {
 		}
 		if (exclClassLoaders != null) {
 			agentOptions.setExclClassloader(exclClassLoaders);
+		}
+		if (inclBootstrapClasses != null) {
+			agentOptions.setInclBootstrapClasses(inclBootstrapClasses
+					.booleanValue());
 		}
 		if (sessionId != null) {
 			agentOptions.setSessionId(sessionId);

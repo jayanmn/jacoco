@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,20 +68,31 @@ public class Analyzer {
 	 * 
 	 * @param classid
 	 *            id of the class calculated with {@link CRC64}
+	 * @param className
+	 *            VM name of the class
 	 * @return ASM visitor to write class definition to
 	 */
-	private ClassVisitor createAnalyzingVisitor(final long classid) {
+	private ClassVisitor createAnalyzingVisitor(final long classid,
+			final String className) {
 		final ExecutionData data = executionData.get(classid);
-		final boolean[] probes = data == null ? null : data.getProbes();
-		final ClassAnalyzer analyzer = new ClassAnalyzer(classid, probes,
-				stringPool) {
+		final boolean[] probes;
+		final boolean noMatch;
+		if (data == null) {
+			probes = null;
+			noMatch = executionData.contains(className);
+		} else {
+			probes = data.getProbes();
+			noMatch = false;
+		}
+		final ClassAnalyzer analyzer = new ClassAnalyzer(classid, noMatch,
+				probes, stringPool) {
 			@Override
 			public void visitEnd() {
 				super.visitEnd();
 				coverageVisitor.visitCoverage(getCoverage());
 			}
 		};
-		return new ClassProbesAdapter(analyzer);
+		return new ClassProbesAdapter(analyzer, false);
 	}
 
 	/**
@@ -91,8 +102,8 @@ public class Analyzer {
 	 *            reader with class definitions
 	 */
 	public void analyzeClass(final ClassReader reader) {
-		final ClassVisitor visitor = createAnalyzingVisitor(CRC64
-				.checksum(reader.b));
+		final ClassVisitor visitor = createAnalyzingVisitor(
+				CRC64.checksum(reader.b), reader.getClassName());
 		reader.accept(visitor, 0);
 	}
 

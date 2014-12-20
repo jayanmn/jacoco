@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,6 @@ package org.jacoco.core.internal.instr;
 import static org.junit.Assert.assertNull;
 
 import org.jacoco.core.JaCoCo;
-import org.jacoco.core.runtime.IRuntime;
-import org.jacoco.core.runtime.LoggerRuntime;
 import org.junit.Before;
 import org.junit.Test;
 import org.objectweb.asm.ClassVisitor;
@@ -24,16 +22,13 @@ import org.objectweb.asm.MethodVisitor;
 /**
  * Unit tests for {@link ClassInstrumenter}.
  */
-public class ClassInstrumenterTest {
-
-	private IRuntime runtime;
+public class ClassInstrumenterTest implements IProbeArrayStrategy {
 
 	private ClassInstrumenter instrumenter;
 
 	@Before
 	public void setup() {
-		runtime = new LoggerRuntime();
-		instrumenter = new ClassInstrumenter(123, runtime, new ClassVisitor(
+		instrumenter = new ClassInstrumenter(this, new ClassVisitor(
 				JaCoCo.ASM_API_VERSION) {
 		});
 	}
@@ -54,7 +49,7 @@ public class ClassInstrumenterTest {
 
 	@Test
 	public void testNoMethodVisitor() {
-		instrumenter = new ClassInstrumenter(123, runtime, new ClassVisitor(
+		instrumenter = new ClassInstrumenter(this, new ClassVisitor(
 				JaCoCo.ASM_API_VERSION) {
 			@Override
 			public MethodVisitor visitMethod(int access, String name,
@@ -63,6 +58,15 @@ public class ClassInstrumenterTest {
 			}
 		});
 		assertNull(instrumenter.visitMethod(0, "foo", "()V", null, null));
+	}
+
+	// === IProbeArrayStrategy ===
+
+	public int storeInstance(MethodVisitor mv, int variable) {
+		return 0;
+	}
+
+	public void addMembers(ClassVisitor cv, int probeCount) {
 	}
 
 }

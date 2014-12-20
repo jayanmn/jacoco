@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,11 +59,11 @@ public class PackagePageTest extends PageTestBase {
 	@Test
 	public void testContentsWithSource() throws Exception {
 		IClassCoverage class1 = new ClassCoverageImpl(
-				"org/jacoco/example/Foo1", 0x1000, null, "java/lang/Object",
-				null);
+				"org/jacoco/example/Foo1", 0x1000, false, null,
+				"java/lang/Object", null);
 		IClassCoverage class2 = new ClassCoverageImpl(
-				"org/jacoco/example/Foo2", 0x2000, null, "java/lang/Object",
-				null);
+				"org/jacoco/example/Foo2", 0x2000, false, null,
+				"java/lang/Object", null);
 		ISourceFileCoverage src1 = new SourceFileCoverageImpl("Src1.java",
 				"org/jacoco/example");
 		node = new PackageCoverageImpl("org/jacoco/example", Arrays.asList(
@@ -96,11 +96,11 @@ public class PackagePageTest extends PageTestBase {
 	@Test
 	public void testContentsNoSource() throws Exception {
 		IClassCoverage class1 = new ClassCoverageImpl(
-				"org/jacoco/example/Foo1", 0x1000, null, "java/lang/Object",
-				null);
+				"org/jacoco/example/Foo1", 0x1000, false, null,
+				"java/lang/Object", null);
 		IClassCoverage class2 = new ClassCoverageImpl(
-				"org/jacoco/example/Foo2", 0x2000, null, "java/lang/Object",
-				null);
+				"org/jacoco/example/Foo2", 0x2000, false, null,
+				"java/lang/Object", null);
 		node = new PackageCoverageImpl("org/jacoco/example", Arrays.asList(
 				class1, class2), Collections.<ISourceFileCoverage> emptyList());
 

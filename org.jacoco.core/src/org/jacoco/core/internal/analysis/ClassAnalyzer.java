@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.objectweb.asm.Opcodes;
 public class ClassAnalyzer extends ClassProbesVisitor {
 
 	private final long classid;
+	private final boolean noMatch;
 	private final boolean probes[];
 	private final StringPool stringPool;
 
@@ -34,14 +35,18 @@ public class ClassAnalyzer extends ClassProbesVisitor {
 	 * 
 	 * @param classid
 	 *            id of the class
+	 * @param noMatch
+	 *            <code>true</code> if class id does not match with execution
+	 *            data
 	 * @param probes
 	 *            execution data for this class or <code>null</code>
 	 * @param stringPool
 	 *            shared pool to minimize the number of {@link String} instances
 	 */
-	public ClassAnalyzer(final long classid, final boolean[] probes,
-			final StringPool stringPool) {
+	public ClassAnalyzer(final long classid, final boolean noMatch,
+			final boolean[] probes, final StringPool stringPool) {
 		this.classid = classid;
+		this.noMatch = noMatch;
 		this.probes = probes;
 		this.stringPool = stringPool;
 	}
@@ -61,7 +66,7 @@ public class ClassAnalyzer extends ClassProbesVisitor {
 			final String signature, final String superName,
 			final String[] interfaces) {
 		this.coverage = new ClassCoverageImpl(stringPool.get(name), classid,
-				stringPool.get(signature), stringPool.get(superName),
+				noMatch, stringPool.get(signature), stringPool.get(superName),
 				stringPool.get(interfaces));
 	}
 
@@ -76,8 +81,7 @@ public class ClassAnalyzer extends ClassProbesVisitor {
 
 		InstrSupport.assertNotInstrumented(name, coverage.getName());
 
-		// TODO: Use filter hook
-		if ((access & Opcodes.ACC_SYNTHETIC) != 0) {
+		if (isMethodFiltered(access, name)) {
 			return null;
 		}
 
@@ -93,6 +97,12 @@ public class ClassAnalyzer extends ClassProbesVisitor {
 				}
 			}
 		};
+	}
+
+	// TODO: Use filter hook in future
+	private boolean isMethodFiltered(final int access, final String name) {
+		return (access & Opcodes.ACC_SYNTHETIC) != 0
+				&& !name.startsWith("lambda$");
 	}
 
 	@Override

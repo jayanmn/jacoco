@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,6 @@ public class CoverageTransformer implements ClassFileTransformer {
 		AGENT_PREFIX = toVMName(name.substring(0, name.lastIndexOf('.')));
 	}
 
-	private final IRuntime runtime;
-
 	private final Instrumenter instrumenter;
 
 	private final IExceptionLogger logger;
@@ -45,6 +43,8 @@ public class CoverageTransformer implements ClassFileTransformer {
 	private final WildcardMatcher exclClassloader;
 
 	private final ClassFileDumper classFileDumper;
+
+	private final boolean includeBootstrapClasses;
 
 	/**
 	 * New transformer with the given delegates.
@@ -58,7 +58,6 @@ public class CoverageTransformer implements ClassFileTransformer {
 	 */
 	public CoverageTransformer(final IRuntime runtime,
 			final AgentOptions options, final IExceptionLogger logger) {
-		this.runtime = runtime;
 		this.instrumenter = new Instrumenter(runtime);
 		this.logger = logger;
 		// Class names will be reported in VM notation:
@@ -66,6 +65,7 @@ public class CoverageTransformer implements ClassFileTransformer {
 		excludes = new WildcardMatcher(toVMName(options.getExcludes()));
 		exclClassloader = new WildcardMatcher(options.getExclClassloader());
 		classFileDumper = new ClassFileDumper(options.getClassDumpDir());
+		includeBootstrapClasses = options.getInclBootstrapClasses();
 	}
 
 	public byte[] transform(final ClassLoader loader, final String classname,
@@ -73,17 +73,17 @@ public class CoverageTransformer implements ClassFileTransformer {
 			final ProtectionDomain protectionDomain,
 			final byte[] classfileBuffer) throws IllegalClassFormatException {
 
+		if (classBeingRedefined != null) {
+			// We do not support class retransformation.
+			return null;
+		}
+
 		if (!filter(loader, classname)) {
 			return null;
 		}
 
 		try {
 			classFileDumper.dump(classname, classfileBuffer);
-			if (classBeingRedefined != null) {
-				// For redefined classes we must clear the execution data
-				// reference as probes might have changed.
-				runtime.disconnect(classBeingRedefined);
-			}
 			return instrumenter.instrument(classfileBuffer, classname);
 		} catch (final Exception ex) {
 			final IllegalClassFormatException wrapper = new IllegalClassFormatException(
@@ -105,12 +105,16 @@ public class CoverageTransformer implements ClassFileTransformer {
 	 * @return <code>true</code> if the class should be instrumented
 	 */
 	protected boolean filter(final ClassLoader loader, final String classname) {
-		// Don't instrument classes of the bootstrap loader:
-		return loader != null &&
+		if (!includeBootstrapClasses) {
+			if (loader == null) {
+				return false;
+			}
+			if (exclClassloader.matches(loader.getClass().getName())) {
+				return false;
+			}
+		}
 
-		!classname.startsWith(AGENT_PREFIX) &&
-
-		!exclClassloader.matches(loader.getClass().getName()) &&
+		return !classname.startsWith(AGENT_PREFIX) &&
 
 		includes.matches(classname) &&
 

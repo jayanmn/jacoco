@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ public class InstrumentTask extends Task {
 
 	private final Union files = new Union();
 
+	private boolean removesignatures = true;
+
 	/**
 	 * Sets the location of the instrumented classes.
 	 * 
@@ -45,6 +47,16 @@ public class InstrumentTask extends Task {
 	 */
 	public void setDestdir(final File destdir) {
 		this.destdir = destdir;
+	}
+
+	/**
+	 * Sets whether signatures should be removed from JAR files.
+	 * 
+	 * @param removesignatures
+	 *            <code>true</code> if signatures should be removed
+	 */
+	public void setRemovesignatures(final boolean removesignatures) {
+		this.removesignatures = removesignatures;
 	}
 
 	/**
@@ -66,6 +78,7 @@ public class InstrumentTask extends Task {
 		int total = 0;
 		final Instrumenter instrumenter = new Instrumenter(
 				new OfflineInstrumentationAccessGenerator());
+		instrumenter.setRemoveSignatures(removesignatures);
 		final Iterator<?> resourceIterator = files.iterator();
 		while (resourceIterator.hasNext()) {
 			final Resource resource = (Resource) resourceIterator.next();

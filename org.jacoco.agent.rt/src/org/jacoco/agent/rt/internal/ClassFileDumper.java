@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.jacoco.core.internal.data.CRC64;
 
 /**
  * Internal dumper for class files.
@@ -62,7 +64,9 @@ class ClassFileDumper {
 				localname = name;
 			}
 			outputdir.mkdirs();
-			final File file = new File(outputdir, localname + ".class");
+			final Long id = Long.valueOf(CRC64.checksum(contents));
+			final File file = new File(outputdir, String.format(
+					"%s.%016x.class", localname, id));
 			final OutputStream out = new FileOutputStream(file);
 			out.write(contents);
 			out.close();

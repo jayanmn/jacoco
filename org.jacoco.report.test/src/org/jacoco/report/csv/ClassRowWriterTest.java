@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,7 @@ public class ClassRowWriterTest {
 	@Test
 	public void TestRow() throws Exception {
 		IClassCoverage node = new ClassCoverageImpl("test/package/Foo", 123,
-				null, "java/lang/Object", null) {
+				false, null, "java/lang/Object", null) {
 			{
 				instructionCounter = CounterImpl.getInstance(1, 11);
 				branchCounter = CounterImpl.getInstance(2, 22);

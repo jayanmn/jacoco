@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,12 +55,15 @@ public abstract class ValidationTestBase {
 
 	protected Source source;
 
+	protected TargetLoader loader;
+
 	protected ValidationTestBase(final Class<?> target) {
 		this.target = target;
 	}
 
 	@Before
 	public void setup() throws Exception {
+		loader = new TargetLoader();
 		final ClassReader reader = new ClassReader(
 				TargetLoader.getClassData(target));
 		final ExecutionDataStore store = execute(reader);
@@ -74,8 +77,7 @@ public abstract class ValidationTestBase {
 		IRuntime runtime = new SystemPropertiesRuntime();
 		runtime.startup(data);
 		final byte[] bytes = new Instrumenter(runtime).instrument(reader);
-		final TargetLoader loader = new TargetLoader(target, bytes);
-		run(loader.getTargetClass());
+		run(loader.add(target, bytes));
 		final ExecutionDataStore store = new ExecutionDataStore();
 		data.collect(store, new SessionInfoStore(), false);
 		runtime.shutdown();

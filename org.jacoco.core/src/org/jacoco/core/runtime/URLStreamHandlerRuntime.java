@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2013 Mountainminds GmbH & Co. KG and Contributors
+ * Copyright (c) 2009, 2014 Mountainminds GmbH & Co. KG and Contributors
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,14 +90,15 @@ public class URLStreamHandlerRuntime extends AbstractRuntime {
 		mv.visitInsn(Opcodes.ACONST_NULL);
 		mv.visitLdcInsn("");
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/net/URL", "<init>",
-				"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
+				"(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",
+				false);
 
 		// Stack[2]: [Ljava/net/URL;
 		// Stack[1]: [Ljava/lang/Object;
 		// Stack[0]: [Ljava/lang/Object;
 
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/net/URL",
-				"openConnection", "()Ljava/net/URLConnection;");
+				"openConnection", "()Ljava/net/URLConnection;", false);
 
 		// Stack[2]: [Ljava/net/URLConnection;
 		// Stack[1]: [Ljava/lang/Object;
@@ -110,7 +111,7 @@ public class URLStreamHandlerRuntime extends AbstractRuntime {
 		// Stack[0]: [Ljava/lang/Object;
 
 		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/lang/Object", "equals",
-				"(Ljava/lang/Object;)Z");
+				"(Ljava/lang/Object;)Z", false);
 
 		// Stack[1]: Z;
 		// Stack[0]: [Ljava/lang/Object;
